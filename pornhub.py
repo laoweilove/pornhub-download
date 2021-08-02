@@ -3,14 +3,15 @@ import re,time
 from lxml import etree
 import execjs
 import pyaria2
-rpc=pyaria2.Aria2RPC()
+rpc=pyaria2.Aria2RPC()#aria2rpc设置，默认6800端口，没密钥
 
 dic={}
 proxy={
     #'http':'http://127.0.0.1:7890',
     'https':'https://127.0.0.1:7890'
-}
-cookie=open('cookie.txt','r').read()
+} #我这里clashx端口7890，v2ray 端口8001
+
+cookie=open('cookie.txt','r').read()#自行粘贴cookie到同目录下cookie.txt
 h={
 
     'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36 Edg/91.0.864.67',
@@ -18,7 +19,7 @@ h={
 }
 
 def download(chanels,s,name):
-    opin={'http-proxy':'http://127.0.0.1:7890','https-proxy':'https://127.0.0.1:7890','out':chanels+'/'+name}
+    opin={'http-proxy':'http://127.0.0.1:7890','https-proxy':'https://127.0.0.1:7890','out':chanels+'/'+name}#aria2 设置梯子
     rpc.addUri([s], opin)
 
 def getchannelslist(chanels,page):
