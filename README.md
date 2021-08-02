@@ -5,7 +5,7 @@
 ## python3
 ## 需要安装execjs pyaria2
 
-#用法 
+# 用法 
 1、 去pornhub 抓取自己的cookie，粘贴到cookie.txt
 2、 找到一个心仪的演员，复制其主页地址
 3、 终端python3 pornhub.py
