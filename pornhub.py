@@ -1,0 +1,99 @@
+import requests as res
+import re,time
+from lxml import etree
+import execjs
+import pyaria2
+rpc=pyaria2.Aria2RPC()
+
+dic={}
+proxy={
+    #'http':'http://127.0.0.1:7890',
+    'https':'https://127.0.0.1:7890'
+}
+cookie=open('cookie.txt','r').read()
+h={
+
+    'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36 Edg/91.0.864.67',
+    'cookie': cookie,
+}
+
+def download(chanels,s,name):
+    opin={'http-proxy':'http://127.0.0.1:7890','https-proxy':'https://127.0.0.1:7890','out':chanels+'/'+name}
+    rpc.addUri([s], opin)
+
+def getchannelslist(chanels,page):
+    url='https://cn.pornhub.com/channels/'+chanels+'/videos?o=ra&page='+str(page)
+    s=res.get(url,headers=h,proxies=proxy).text
+    html = etree.HTML(s)
+    vkeys = html.xpath('//ul[@class="videos row-5-thumbs videosGridWrapper"]/li/@data-video-vkey')
+    names=html.xpath('//ul[@class="videos row-5-thumbs videosGridWrapper"]/li/div/div[3]/span/a/@title')
+    for i,j in enumerate(vkeys):
+        getvideo(chanels,j,names[i])
+        print(j,'ok')
+    return len(vkeys)
+
+def starlist(star,page):
+    url='https://cn.pornhub.com/pornstar/'+star+'/videos/upload?page='+str(page)
+    s = res.get(url, headers=h, proxies=proxy).text
+    html = etree.HTML(s)
+    vkeys = html.xpath('//ul[@class="videos row-5-thumbs"]/li/@data-video-vkey')
+    names = html.xpath('//ul[@class="videos row-5-thumbs"]/li/div/div[3]/span/a/@title')
+    for i, j in enumerate(vkeys):
+        getvideo(star, j, names[i])
+        print(j, 'ok')
+    return len(vkeys)
+
+def modellist(model,page):
+    url='https://cn.pornhub.com/model/'+model+'/videos?page='+str(page)
+    s = res.get(url, headers=h, proxies=proxy).text
+    html = etree.HTML(s)
+    vkeys = html.xpath('//ul[@id="mostRecentVideosSection"]/li/@data-video-vkey')
+    names = html.xpath('//ul[@id="mostRecentVideosSection"]/li/div/div[3]/span/a/@title')
+    for i, j in enumerate(vkeys):
+        getvideo(model, j, names[i])
+        print(j, 'ok')
+    return len(vkeys)
+
+def getvideo(chanels,viewkey,name):
+    url='https://cn.pornhub.com/view_video.php?viewkey='+viewkey
+    try:
+        s=res.get(url,headers=h,timeout=5,proxies=proxy).text
+        x=re.findall('(var .*\?s=.*?;)flashvars_',s)[0]
+        time.sleep(1)
+        js='function test(a){ '+x+'return media_0;}'
+        ss=execjs.compile(js)
+        nul=ss.call('test','1')
+        xx=res.get(nul,headers=h,proxies=proxy).json()[-1]['videoUrl']
+        download(chanels,xx,name+'.mp4')
+    except:
+        getvideo(chanels,viewkey,name)
+
+def chanel(chanes):
+    lex=36
+    page=1
+    while lex==36:
+        lex=getchannelslist(chanes,page)
+        page+=1
+
+def star(chanes):
+    lex = 40
+    page = 1
+    while lex == 40:
+        lex = starlist(chanes, page)
+        page += 1
+
+def model(chanes):
+    lex = 40
+    page = 1
+    while lex == 40:
+        lex = modellist(chanes, page)
+        page += 1
+
+if __name__ == '__main__':
+    x=input('地址').split('/')
+    if x[3]=='model':
+        model(x[4])
+    elif x[3]=='star':
+        star(x[4])
+    elif x[3]=='channels':
+        chanel(x[4])
