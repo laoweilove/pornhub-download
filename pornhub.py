@@ -94,7 +94,7 @@ if __name__ == '__main__':
     x=input('地址').split('/')
     if x[3]=='model':
         model(x[4])
-    elif x[3]=='star':
+    elif x[3]=='pornstar':
         star(x[4])
     elif x[3]=='channels':
         chanel(x[4])
