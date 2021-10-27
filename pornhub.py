@@ -56,15 +56,20 @@ def modellist(model,page):
     return len(vkeys)
 
 def getvideo(chanels,viewkey,name):
-    url='https://cn.pornhub.com/view_video.php?viewkey='+viewkey
+    url='https://'+lag+'.pornhub.com/view_video.php?viewkey='+viewkey
     try:
         s=res.get(url,headers=h,timeout=5,proxies=proxy).text
-        x=re.findall('(var .*\?s=.*?;)flashvars_',s)[0]
-        time.sleep(1)
-        js='function test(a){ '+x+'return media_0;}'
+        x=re.findall('= media_4;(var .*?media_5.*?;)',s)[0]
+        js='function test(a){ '+x+'return media_5;}'
         ss=execjs.compile(js)
         nul=ss.call('test','1')
-        xx=res.get(nul,headers=h,proxies=proxy).json()[-1]['videoUrl']
+        xx=''
+        lex=0
+        while xx=='':
+            xx=res.get(nul,headers=h,proxies=proxy).json()[lex-1]['videoUrl']
+            lex=lex-1
+            if lex <-3:
+                break
         download(chanels,xx,name+'.mp4')
     except:
         getvideo(chanels,viewkey,name)
