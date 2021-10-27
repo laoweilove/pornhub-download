@@ -1,8 +1,13 @@
-import requests as res
+import requests
 import re,time
 from lxml import etree
 import execjs
 import pyaria2
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util import Retry
+
+res = requests.Session()
+res.mount('https://', HTTPAdapter(max_retries=Retry(total=5, method_whitelist=frozenset(['GET', 'POST']))))
 rpc=pyaria2.Aria2RPC()#aria2rpc设置，默认6800端口，没密钥
 
 dic={}
@@ -58,11 +63,18 @@ def modellist(model,page):
 def getvideo(chanels,viewkey,name):
     url='https://'+lag+'.pornhub.com/view_video.php?viewkey='+viewkey
     try:
-        s=res.get(url,headers=h,timeout=5,proxies=proxy).text
-        x=re.findall('= media_4;(var .*?media_5.*?;)',s)[0]
-        js='function test(a){ '+x+'return media_5;}'
-        ss=execjs.compile(js)
-        nul=ss.call('test','1')
+
+
+        s=res.get(url,headers=h,timeout=5,proxies=proxy,).text
+        x=re.findall('= media_\d;(var .*?media_\d.*?;)',s)
+        urls=[]
+        for i,j in enumerate(x):
+            js='function test(a){ '+j+'return media_'+str(i+1)+';}'
+            ss=execjs.compile(js)
+
+            xnul=ss.call('test','1')
+            urls.append(xnul)
+        nul=urls[-1]
         xx=''
         lex=0
         while xx=='':
@@ -70,9 +82,11 @@ def getvideo(chanels,viewkey,name):
             lex=lex-1
             if lex <-3:
                 break
+
+
         download(chanels,xx,name+'.mp4')
     except:
-        getvideo(chanels,viewkey,name)
+        pass
 
 def chanel(chanes):
     lex=36
