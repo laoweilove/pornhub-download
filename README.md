@@ -18,3 +18,6 @@
 包括三种：channels、model、star
 暂时没注意到其他用户类型，如有可以留言回复
 pornhub-downloader
+
+# 2021.10.27更新
+适应新的js规则
