@@ -85,6 +85,7 @@ def getvideo(chanels,viewkey,name):
 
 
         download(chanels,xx,name+'.mp4')
+        time.sleep(2)
     except:
         pass
 
