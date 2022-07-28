@@ -6,11 +6,11 @@
 ## 需要安装execjs pyaria2
 
 # 用法 
-1、 去pornhub 抓取自己的cookie，粘贴到cookie.txt
-2、 找到一个心仪的演员，复制其主页地址
-3、 终端python3 pornhub.py
-4、aria2 rpc模式打开，默认端口6800，无密钥，如过有修改，在代码内自行修改
-5、 将主页地址，粘进去回车开始下载
+- 1、 去pornhub 抓取自己的cookie，粘贴到cookie.txt
+- 2、 找到一个心仪的演员，复制其主页地址
+- 3、 终端python3 pornhub.py
+- 4、aria2 rpc模式打开，默认端口6800，无密钥，如过有修改，在代码内自行修改
+- 5、 将主页地址，粘进去回车开始下载
 
 
 
@@ -27,3 +27,5 @@ pornhub-downloader
 
 # 2022.7.28 更新
 优化代码，变量名称，增加可读性
+增加requirements.txt
+增加uag.txt
