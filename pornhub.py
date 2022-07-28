@@ -85,15 +85,15 @@ def get_video(channels, view_key, name):
             x_nul = ss.call('test', '1')
             urls.append(x_nul)
         nul = urls[-1]
-        final_url = ''
+        video_url = ''
         count = 0
-        while final_url == '':
-            final_url = res.get(nul, headers=h, proxies=proxy).json()[count - 1]['videoUrl']
+        while video_url == '':
+            video_url = res.get(nul, headers=h, proxies=proxy).json()[count - 1]['videoUrl']
             count = count - 1
             if count < -3:
                 break
 
-        download(channels, xx, name + '.mp4')
+        download(channels, video_url, name + '.mp4')
         time.sleep(2)
     except Exception as err:
         print(err)
