@@ -95,7 +95,9 @@ def get_video(channels, view_key, name):
 
         download(channels, xx, name + '.mp4')
         time.sleep(2)
-    except:
+    except Exception as err:
+        print(err)
+        time.sleep(2)
         pass
 
 
