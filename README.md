@@ -26,6 +26,6 @@ pornhub-downloader
 增加延迟，减少被ban几率
 
 # 2022.7.28 更新
-优化代码，变量名称，增加可读性
-增加requirements.txt
-增加uag.txt
+- 优化代码，变量名称，增加可读性
+- 增加requirements.txt
+- 增加uag.txt
