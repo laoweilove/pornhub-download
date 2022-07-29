@@ -4,6 +4,7 @@ import time
 from lxml import etree
 import execjs
 import pyaria2
+import random
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util import Retry
 
@@ -13,17 +14,29 @@ rpc = pyaria2.Aria2RPC()  # aria2rpc设置，默认6800端口，没密钥
 lag = 'www'
 dic = {}
 proxy = {
-    'http':'http://127.0.0.1:7890',
+    'http': 'http://127.0.0.1:7890',
     'https': 'http://127.0.0.1:7890'
 }  # 我这里clash端口7890，v2ray 端口8001
 
 cookie = open('cookie.txt', 'r').read()  # 自行粘贴cookie到同目录下cookie.txt
-user_agent = open('uag.txt', 'r').read()
+user_agents = open('uag.txt', 'r').read().split('\n')
+user_agent = random.choice(user_agents)
 h = {
 
     'user-agent': user_agent,
     'cookie': cookie,
 }
+
+LOGO = '''
+
+   ___                                    _     
+  / _ \ ___   _ __  _ __    /\  /\ _   _ | |__  
+ / /_)// _ \ | '__|| '_ \  / /_/ /| | | || '_ \ 
+/ ___/| (_) || |   | | | |/ __  / | |_| || |_) |
+\/     \___/ |_|   |_| |_|\/ /_/   \__,_||_.__/ 
+                                                
+                                        by laowei
+'''
 
 
 def download(channels, video_url, name):
@@ -126,6 +139,7 @@ def model(models):
 
 
 if __name__ == '__main__':
+    print(LOGO)
     input_address = input('地址').split('/')
     if input_address[3] == 'model':
         model(input_address[4])
