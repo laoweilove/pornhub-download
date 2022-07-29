@@ -27,3 +27,8 @@
 - 优化代码，变量名称，增加可读性
 - 增加requirements.txt
 - 增加uag.txt
+
+
+# 2022.7.29 更新
+- 增加更多user-agent 随机选择
+- 增加LOGO                                                                                                                                                                                                                 
