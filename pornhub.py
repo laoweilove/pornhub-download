@@ -1,31 +1,30 @@
-import requests
+import httpx
 import re
 import time
 from lxml import etree
 import execjs
 import pyaria2
 import random
-from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util import Retry
 
-res = requests.Session()
-res.mount('https://', HTTPAdapter(max_retries=Retry(total=5, allowed_methods=frozenset(['GET', 'POST']))))
 rpc = pyaria2.Aria2RPC()  # aria2rpc设置，默认6800端口，没密钥
 lag = 'www'
 dic = {}
-proxy = {
-    'http': 'http://127.0.0.1:7890',
-    'https': 'http://127.0.0.1:7890'
-}  # 我这里clash端口7890，v2ray 端口8001
 
 cookie = open('cookie.txt', 'r').read()  # 自行粘贴cookie到同目录下cookie.txt
 user_agents = open('uag.txt', 'r').read().split('\n')
 user_agent = random.choice(user_agents)
-h = {
 
+h = {
     'user-agent': user_agent,
     'cookie': cookie,
 }
+
+proxy = {
+    'http://': 'http://127.0.0.1:7890',
+    'https://': 'http://127.0.0.1:7890'
+}  # 我这里clash端口7890，v2ray 端口8001
+
+res = httpx.Client(proxies=proxy, timeout=5, headers=h, http2=True)
 
 LOGO = '''
 
@@ -50,7 +49,7 @@ def download(channels, video_url, name):
 
 def channels_list(channels, page):
     url = f'https://{lag}.pornhub.com/channels/{channels}/videos?o=ra&page={page}'
-    s = res.get(url, headers=h, proxies=proxy).text
+    s = res.get(url).text
     html = etree.HTML(s)
     view_keys = html.xpath('//ul[@class="videos row-5-thumbs videosGridWrapper"]/li/@data-video-vkey')
     names = html.xpath('//ul[@class="videos row-5-thumbs videosGridWrapper"]/li/div/div[3]/span/a/@title')
@@ -62,7 +61,7 @@ def channels_list(channels, page):
 
 def star_list(pornstar, page):
     url = f'https://{lag}.pornhub.com/pornstar/{pornstar}/videos/upload?page={page}'
-    s = res.get(url, headers=h, proxies=proxy).text
+    s = res.get(url).text
     html = etree.HTML(s)
     view_keys = html.xpath('//ul[@class="videos row-5-thumbs"]/li/@data-video-vkey')
     names = html.xpath('//ul[@class="videos row-5-thumbs"]/li/div/div[3]/span/a/@title')
@@ -74,7 +73,7 @@ def star_list(pornstar, page):
 
 def model_list(models, page):
     url = f'https://{lag}.pornhub.com/model/{models}/videos?page={page}'
-    s = res.get(url, headers=h, proxies=proxy).text
+    s = res.get(url).text
     html = etree.HTML(s)
     view_keys = html.xpath('//ul[@id="mostRecentVideosSection"]/li/@data-video-vkey')
     names = html.xpath('//ul[@id="mostRecentVideosSection"]/li/div/div[3]/span/a/@title')
@@ -87,8 +86,7 @@ def model_list(models, page):
 def get_video(channels, view_key, name):
     url = f'https://{lag}.pornhub.com/view_video.php?viewkey={view_key}'
     try:
-
-        s = res.get(url, headers=h, timeout=5, proxies=proxy, ).text
+        s = res.get(url).text
         js_data = re.findall('= media_\d;(var .*?media_\d.*?;)', s)
         urls = []
         for i, j in enumerate(js_data):
@@ -101,7 +99,7 @@ def get_video(channels, view_key, name):
         video_url = ''
         count = 0
         while video_url == '':
-            video_url = res.get(nul, headers=h, proxies=proxy).json()[count - 1]['videoUrl']
+            video_url = res.get(nul).json()[count - 1]['videoUrl']
             count = count - 1
             if count < -3:
                 break
