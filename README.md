@@ -31,4 +31,7 @@
 
 # 2022.7.29 更新
 - 增加更多user-agent 随机选择
-- 增加LOGO                                                                                                                                                                                                                 
+- 增加LOGO
+
+# 2022.8.31 更新
+- 用httpx替换requests，从而支持http2
