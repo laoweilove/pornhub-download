@@ -5,12 +5,17 @@ from lxml import etree
 import execjs
 import pyaria2
 import random
+import yaml
 
 rpc = pyaria2.Aria2RPC()  # aria2rpc设置，默认6800端口，没密钥
 lag = 'www'
 dic = {}
 
-cookie = open('cookie.txt', 'r').read()  # 自行粘贴cookie到同目录下cookie.txt
+c=yaml.load(open('cookie.yaml'),yaml.Loader)['cookie']
+cookie = ''
+for i in c:
+    cookie += f'{i}={c[i]};'
+
 user_agents = open('uag.txt', 'r').read().split('\n')
 user_agent = random.choice(user_agents)
 
