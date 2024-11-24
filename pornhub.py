@@ -92,7 +92,6 @@ def model_list(models, page):
 
 def get_video(channels, view_key, name):
     url = f'https://{lag}.pornhub.com/view_video.php?viewkey={view_key}'
-    print(url)
     try:
         s = res.get(url).text
         json_data = re.findall('var flashvars_\d+ = (\{.*?});', s)[0]
