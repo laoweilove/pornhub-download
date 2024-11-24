@@ -41,3 +41,7 @@
 - 增加login.py，通过在cookei.yaml中设置usernam 和password 即可登录
 - 登录过程中可能会遇到机器验证，需在p站登录通过验证后即可
 - 之后即可利用保存在yaml里的信息，直接使用downloader
+
+# 2022.11.3 更新
+- 使用curl_cffi替换httpx
+- 更新videourl获取方式
