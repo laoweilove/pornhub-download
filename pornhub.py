@@ -1,11 +1,13 @@
+import json
 import httpx
 import re
 import time
 from lxml import etree
-import execjs
+# import execjs
 import pyaria2
 import random
 import yaml
+from curl_cffi import requests
 
 rpc = pyaria2.Aria2RPC()  # aria2rpc设置，默认6800端口，没密钥
 lag = 'www'
@@ -25,11 +27,11 @@ h = {
 }
 
 proxy = {
-    'http://': 'http://127.0.0.1:7890',
-    'https://': 'http://127.0.0.1:7890'
+    'http': 'http://127.0.0.1:7890',
+    'https': 'http://127.0.0.1:7890'
 }  # 我这里clash端口7890，v2ray 端口8001
 
-res = httpx.Client(proxies=proxy, timeout=5, headers=h, http2=True)
+res = requests.Session(proxies=proxy, timeout=5, headers=h)
 
 LOGO = '''
 
@@ -90,17 +92,12 @@ def model_list(models, page):
 
 def get_video(channels, view_key, name):
     url = f'https://{lag}.pornhub.com/view_video.php?viewkey={view_key}'
+    print(url)
     try:
         s = res.get(url).text
-        js_data = re.findall('= media_\d;(var .*?media_\d.*?;)', s)
-        urls = []
-        for i, j in enumerate(js_data):
-            js = 'function test(a){ ' + j + 'return media_' + str(i + 1) + ';}'
-            ss = execjs.compile(js)
-
-            x_nul = ss.call('test', '1')
-            urls.append(x_nul)
-        nul = urls[-1]
+        json_data = re.findall('var flashvars_\d+ = (\{.*?});', s)[0]
+        urls=json.loads(json_data)['mediaDefinitions']
+        nul = urls[-1]['videoUrl']
         video_url = ''
         count = 0
         while video_url == '':
