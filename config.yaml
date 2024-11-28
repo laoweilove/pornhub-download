@@ -1,0 +1,10 @@
+cookie:
+login:
+  password: ''
+  username: ''
+proxy:
+  http: http://localhost:7890
+  https: http://localhost:7890
+rpc:
+  token: ''
+  url: http://locakhost:6800/rpc

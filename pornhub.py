@@ -3,20 +3,18 @@ import httpx
 import re
 import time
 from lxml import etree
-# import execjs
 import pyaria2
 import random
 import yaml
 from curl_cffi import requests
 
-rpc = pyaria2.Aria2RPC()  # aria2rpc设置，默认6800端口，没密钥
+c = yaml.load(open('config.yaml'), yaml.Loader)
+rpc = pyaria2.Aria2RPC(url=c['rpc']['url'],token=c['rpc']['token'])
 lag = 'www'
 dic = {}
-
-c=yaml.load(open('cookie.yaml'),yaml.Loader)['cookie']
 cookie = ''
-for i in c:
-    cookie += f'{i}={c[i]};'
+for i in c['cookie']:
+    cookie += f'{i}={c["cookie"][i]};'
 
 user_agents = open('uag.txt', 'r').read().split('\n')
 user_agent = random.choice(user_agents)
@@ -26,10 +24,7 @@ h = {
     'cookie': cookie,
 }
 
-proxy = {
-    'http': 'http://127.0.0.1:7890',
-    'https': 'http://127.0.0.1:7890'
-}  # 我这里clash端口7890，v2ray 端口8001
+proxy = c['proxy']  # 我这里clash端口7890，v2ray 端口8001
 
 res = requests.Session(proxies=proxy, timeout=5, headers=h)
 
@@ -40,15 +35,15 @@ LOGO = '''
  / /_)// _ \ | '__|| '_ \  / /_/ /| | | || '_ \ 
 / ___/| (_) || |   | | | |/ __  / | |_| || |_) |
 \/     \___/ |_|   |_| |_|\/ /_/   \__,_||_.__/ 
-                                                
+
                                         by laowei
 '''
 
 
 def download(channels, video_url, name):
     options = {
-        'http-proxy': 'http://127.0.0.1:7890',
-        'https-proxy': 'http://127.0.0.1:7890',
+        'http-proxy': proxy['http'],
+        'https-proxy': proxy['https'],
         'out': channels + '/' + name
     }  # aria2 设置梯子
     rpc.addUri([video_url], options)
@@ -95,7 +90,7 @@ def get_video(channels, view_key, name):
     try:
         s = res.get(url).text
         json_data = re.findall('var flashvars_\d+ = (\{.*?});', s)[0]
-        urls=json.loads(json_data)['mediaDefinitions']
+        urls = json.loads(json_data)['mediaDefinitions']
         nul = urls[-1]['videoUrl']
         video_url = ''
         count = 0
