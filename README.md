@@ -45,3 +45,6 @@
 # 2024.11.24 更新
 - 使用curl_cffi替换httpx
 - 更新videourl获取方式
+
+# 2024.11.28 更新
+- 将proxy，rpc都集中和cookie放在一起，以方便修改配置，将配置文件重名为config.yaml
